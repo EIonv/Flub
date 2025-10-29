@@ -12,7 +12,7 @@ _G.Fruits = {
 	legendary = { pickup = true },
 }
 
-loadstring(game:HttpGet("https://github.com/EIonv/RBXScripts/raw/refs/heads/dev-branch/skw-enc/skw_v2.luau"))()		
+loadstring(game:HttpGet("https://github.com/EIonv/Flub/raw/refs/heads/main/skw-enc/skw_v2.luau"))()		
 ```
 
 ## Fruit Forager No Ui
@@ -25,5 +25,5 @@ _G.Fruits = {
 	mythic = { pickup = true },
 	legendary = { pickup = true },
 }
-loadstring(game:HttpGet("https://github.com/EIonv/RBXScripts/raw/refs/heads/dev-branch/FruitForagerNoUI.luau"))()
+loadstring(game:HttpGet("https://github.com/EIonv/Flub/raw/refs/heads/main/FruitForagerNoUI.luau"))()
 ```
