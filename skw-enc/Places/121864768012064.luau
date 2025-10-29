@@ -9,7 +9,7 @@ local FishIt = loadstring(
 
 local Default = FishIt.new({ LocalPlayer = game:GetService("Players").LocalPlayer })
 Default.toggleKey = Enum.KeyCode.F
-Default.loopDelay = { postInvoke = 3, between = 1 }
+Default.loopDelay = { postInvoke = 2, between = 1 }
 Default:Start()
 -- then send in the chat systemChannel:DisplaySystemMessage("FishIt started! Press F to toggle.", "Info")
 systemChannel:DisplaySystemMessage("FishIt started! Press F to toggle.", "Info")
