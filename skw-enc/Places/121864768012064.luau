@@ -11,3 +11,4 @@ local Default = FishIt
 Default:Start()
 -- then send in the chat systemChannel:DisplaySystemMessage("FishIt started! Press F to toggle.", "Info")
 systemChannel:DisplaySystemMessage("FishIt started! Press F to toggle.", "Info")
+print("FishIt started! Press F to toggle.")
