@@ -25,5 +25,5 @@ _G.Fruits = {
 	mythic = { pickup = true },
 	legendary = { pickup = true },
 }
-loadstring(game:HttpGet("https://github.com/EIonv/RBXScripts/raw/refs/heads/dev-branch/FruitForagerNoUI.luau"))()
+loadstring(game:HttpGet("https://github.com/EIonv/Flub/raw/refs/heads/main/FruitForagerNoUI.luau"))()
 ```
