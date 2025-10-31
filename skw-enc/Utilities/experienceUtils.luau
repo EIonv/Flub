@@ -11,7 +11,6 @@ local placeScripts = {
 	[134006883039063] = "https://github.com/EIonv/Flub/raw/refs/heads/main/skw-enc/Places/134006883039063.luau",
 	[121864768012064] = "https://github.com/EIonv/Flub/raw/refs/heads/main/skw-enc/Places/121864768012064.luau",
 	[15919221063] = "https://github.com/EIonv/Flub/raw/refs/heads/main/skw-enc/Places/15919221063.luau",
-	[8003084678] = "https://github.com/EIonv/Flub/raw/refs/heads/main/skw-enc/Places/8003084678.luau",
 }
 
 function experienceUtils.getPlaceId()
