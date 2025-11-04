@@ -1,0 +1,144 @@
+task.wait(5)
+
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+_G.Fruits = {
+	common = { pickup = true },
+	uncommon = { pickup = true },
+	rare = { pickup = true },
+	epic = { pickup = true },
+	mythic = { pickup = true },
+	legendary = { pickup = true },
+	unique = { pickup = true },
+}
+_G.teleportToSell = true
+
+loadstring(game:HttpGet("https://github.com/EIonv/Flub/raw/refs/heads/main/FruitForagerNoUI.luau"))()
+
+task.wait(5)
+
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+local PlaceID = game.PlaceId
+local TeleportService = game:GetService("TeleportService")
+
+-- Config: if you want to always rejoin a specific lobby/place when an
+-- instance teleport fails, set LOBBY_PLACE_ID to that place id (number).
+-- By default we use the current PlaceID which will rejoin the same place.
+local LOBBY_PLACE_ID = PlaceID
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+end
+function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                task.wait()
+                -- persist the new server list
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                end)
+
+                -- Try to teleport to this instance (with retries). If it succeeds the
+                -- player will be moved and this script will stop running locally; if
+                -- it fails we continue searching other servers until we find one.
+                local function tryTeleportToInstance(placeId, instanceId, player, attempts)
+                    attempts = attempts or 6
+                    for attempt = 1, attempts do
+                        local ok = pcall(function()
+                            TeleportService:TeleportToPlaceInstance(placeId, instanceId, player)
+                        end)
+                        if ok then
+                            return true
+                        end
+                        -- backoff before retry
+                        task.wait(1 + attempt * 0.5)
+                    end
+                    return false
+                end
+
+                local teleported = tryTeleportToInstance(PlaceID, ID, game.Players.LocalPlayer, 6)
+                if not teleported then
+                    -- fallback: try teleporting to the lobby place (useful if instance
+                    -- teleports are blocked or repeatedly error). This will move the
+                    -- player back to a known lobby so the outer loop can continue.
+                    pcall(function()
+                        TeleportService:Teleport(LOBBY_PLACE_ID, game.Players.LocalPlayer)
+                    end)
+                end
+
+                task.wait(4)
+            end
+        end
+    end
+    -- no teleport succeeded in this page iteration
+    return false
+end
+
+function Teleport()
+    -- Continuously try to find a server and teleport there. If TPReturner reports
+    -- no successful teleport, task.wait and try again. This makes the script continuously
+    -- search for joinable servers until it actually teleports the player.
+    while true do
+        local ok, teleported = pcall(function()
+            return TPReturner()
+        end)
+
+        -- if the call itself errored, task.wait a bit and try again
+        if not ok then
+            task.wait(2)
+            continue
+        end
+
+        -- if TPReturner returned true, we likely teleported (the script will stop locally)
+        if teleported == true then
+            break
+        end
+
+        -- no teleport succeeded in this pass; try again after a short delay
+        task.wait(3)
+    end
+end
+
+-- If you'd like to use a script before server hopping (Like a Automatic Chest collector you can put the Teleport() after it collected everything.
+Teleport()
