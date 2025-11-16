@@ -1,3 +1,6 @@
+-- if not 135625754866483 then return end
+if game.PlaceId ~= 135625754866483 then return end
+
 task.wait(5)
 
 --[[
